@@ -39,7 +39,7 @@ class _LoginDemoState extends State<LoginDemo> {
                 child: Container(
                     width: 200,
                     height: 150,
-                    child: Image.asset('assets/images/flutter-logo.png')
+                    child: Image.asset('assets/images/logo.png')
                 ),
               ),
             ),
@@ -72,6 +72,12 @@ class _LoginDemoState extends State<LoginDemo> {
             TextButton(
                 onPressed: () {
                   //show toast
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Forgot Password'),
+                        duration: Duration(seconds: 2),
+                      )
+                  );
 
                 },
                 child: const Text('Forgot Password')),
@@ -91,7 +97,7 @@ class _LoginDemoState extends State<LoginDemo> {
                       PageTransition(
                           child: const Profile(),
                           alignment: Alignment.bottomCenter,
-                          duration: const Duration(seconds: 1),
+                          duration: const Duration(milliseconds: 500),
                           type: PageTransitionType.scale
                       ),
 
