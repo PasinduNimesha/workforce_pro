@@ -41,30 +41,26 @@ class _ProfilesOverviewState extends State<ProfilesOverview> {
       appBar: AppBar(
         title: const Text('Profiles Overview'),
       ),
-      body: _profiles == []
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: _profiles.length,
-        itemBuilder: (context, index) {
-          final profile = _profiles[index];
-          return ProfilePreview(
-            title: profile['username'],
-            onTap: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                  child: ViewProfile(userId: profile['id']),
-                  type: PageTransitionType.rightToLeftWithFade,
-                  alignment: Alignment.bottomCenter,
-                  duration: const Duration(milliseconds: 200),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
+      body: _profiles == [] ? const Center(child: CircularProgressIndicator()) : ListView.builder(itemCount: _profiles.length, itemBuilder: (context, index) {
+            final profile = _profiles[index];
+            return ProfilePreview(
+              title: profile['username'],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    child: ViewProfile(userId: profile['id']),
+                    type: PageTransitionType.rightToLeftWithFade,
+                    alignment: Alignment.bottomCenter,
+                    duration: const Duration(milliseconds: 200),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      );
+    }
 }
 
 class ProfilePreview extends StatelessWidget {

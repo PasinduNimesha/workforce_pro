@@ -36,10 +36,18 @@ class _AddEmployeeState extends State<AddEmployee> {
             children: [
               TextFormField(
                 controller: _fullNameController,
-                decoration: InputDecoration(labelText: 'Full Name'),
+                decoration: const InputDecoration(labelText: 'Full Name'),
               ),
               const SizedBox(height: 20),
-              DatePicker(message: "Birthdate"),
+              RowDatePicker(
+                  message: "Birthdate",
+                  onDateSelected: (date) {
+                    setState(() {
+                      _selectedDate = date;
+                      _birthdateController.text = date.toLocal().toString().split(' ')[0];
+                    });
+                  },
+              ),
 
 
               const SizedBox(height: 20),
@@ -112,39 +120,40 @@ class _AddEmployeeState extends State<AddEmployee> {
   }
 }
 
-class DatePicker extends StatefulWidget {
+class RowDatePicker extends StatefulWidget {
   final String message;
-  const DatePicker({super.key, required this.message});
+  final ValueChanged<DateTime> onDateSelected;
+  const RowDatePicker({super.key, required this.message, required this.onDateSelected});
 
   @override
-  State<DatePicker> createState() => _DatePickerState();
+  State<RowDatePicker> createState() => _RowDatePickerState();
 }
 
-class _DatePickerState extends State<DatePicker> {
+class _RowDatePickerState extends State<RowDatePicker> {
   DateTime? _selectedDate;
   @override
   Widget build(BuildContext context) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(_selectedDate == null ? 'Select ${widget.message}' : "${widget.message}", style: TextStyle(fontSize: 16),),
+          Text(_selectedDate == null ? 'Select ${widget.message}' : widget.message, style: TextStyle(fontSize: 16),),
           const SizedBox(width: 50,),
           TextButton(
               onPressed: () async {
-                print("Date Picker");
                 final pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
+                  firstDate: DateTime(2010),
+                  lastDate: DateTime(2030),
                 );
                 if (pickedDate != null) {
                   setState(() {
                     _selectedDate = pickedDate;
                   });
+                  widget.onDateSelected(pickedDate);
                 }
               },
-              child: Text(_selectedDate == null ? 'Select Birthdate' : '${_selectedDate!.toLocal()}'.split(' ')[0],
+              child: Text(_selectedDate == null ? 'Select date' : '${_selectedDate!.toLocal()}'.split(' ')[0],
               )
           )
         ]

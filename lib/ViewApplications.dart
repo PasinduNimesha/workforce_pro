@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:workforce_pro/PendingApplications.dart';
 
 class ViewApplications extends StatefulWidget {
-  const ViewApplications({Key? key}) : super(key: key);
+  const ViewApplications({super.key});
 
   @override
   State<ViewApplications> createState() => _ViewApplicationsState();
@@ -24,6 +25,7 @@ class _ViewApplicationsState extends State<ViewApplications> {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
       setState(() {
+        applications = [];
         applications = responseData.map((data) => Application.fromJson(data)).toList();
       });
     } else {
@@ -38,7 +40,7 @@ class _ViewApplicationsState extends State<ViewApplications> {
       appBar: AppBar(
         title: const Text('View Applications'),
       ),
-      body: ListView.builder(
+      body: applications.isEmpty ? const Center(child: CircularProgressIndicator()) : ListView.builder(
         itemCount: applications.length,
         itemBuilder: (context, index) {
           return ApplicationPreview(
@@ -86,26 +88,10 @@ class Application {
   }
 }
 
-// class ApplicationTile extends StatelessWidget {
-//   final Application application;
-//   const ApplicationTile({Key? key, required this.application}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListTile(
-//       title: Text(application.leaveType),
-//       subtitle: Text('Status: ${application.status}'),
-//       onTap: () {
-//         // Handle onTap event
-//       },
-//     );
-//   }
-//
-// }
 
 class ApplicationTile extends StatelessWidget {
   final Application application;
-  const ApplicationTile({Key? key, required this.application}) : super(key: key);
+  const ApplicationTile({super.key, required this.application});
 
   @override
   Widget build(BuildContext context) {

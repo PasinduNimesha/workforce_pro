@@ -12,11 +12,11 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Expanded(
+          Expanded(
             flex: 2,
             child: UpperProfile(), // Upper part of the profile screen
           ),
@@ -33,14 +33,14 @@ class Home extends StatelessWidget {
 
 
 class UpperProfile extends StatelessWidget {
-  const UpperProfile({Key? key}) : super(key: key);
+  const UpperProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.blue, // Example color for upper part
-      child: Padding(
-        padding: const EdgeInsets.all(30.0),
+      child: const Padding(
+        padding: EdgeInsets.all(30.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -52,7 +52,7 @@ class UpperProfile extends StatelessWidget {
               ],
             ),
             Column(
-              children: const [
+              children: [
                 Text('asdasdasdEmail'),
                 Text('Phone'),
                 Text('Address'),
@@ -67,7 +67,7 @@ class UpperProfile extends StatelessWidget {
 
 
 class LowerProfile extends StatelessWidget {
-  const LowerProfile({Key? key}) : super(key: key);
+  const LowerProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +84,10 @@ class LowerProfile extends StatelessWidget {
                 PageTransition(
                     child: const LeaveApplication(),
                     type: PageTransitionType.scale,
-                    childCurrent: const Home(),
-                    alignment: Alignment.centerLeft,
-                    duration: const Duration(milliseconds: 300)
+                    alignment: Alignment.center,
+                    duration: const Duration(milliseconds: 1000)
                 )
+
             );
           }
           ),
@@ -96,9 +96,8 @@ class LowerProfile extends StatelessWidget {
                 context,
                 PageTransition(
                     child: const ViewApplications(),
-                    type: PageTransitionType.scale,
-                    alignment: Alignment.centerRight,
-                    duration: const Duration(milliseconds: 300)
+                    type: PageTransitionType.rightToLeft,
+                    duration: const Duration(milliseconds: 50)
                 )
             );
           },),
@@ -147,20 +146,18 @@ class ActionTile extends StatelessWidget {
         color: Colors.red,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Center(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(iconData, size: 50, color: Colors.white,),
-                      ),
-                      Text(title),
-                    ],
-                  )
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(iconData, size: 50, color: Colors.white,),
+                    ),
+                    Text(title),
+                  ],
+                )
             ),
           ),
         ),
