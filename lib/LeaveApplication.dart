@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:workforce_pro/AddEmployee.dart';
 
 class LeaveApplication extends StatefulWidget {
-  const LeaveApplication({Key? key}) : super(key: key);
+  const LeaveApplication({super.key});
 
   @override
   State<LeaveApplication> createState() => _LeaveApplicationState();
 }
 
 class _LeaveApplicationState extends State<LeaveApplication> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _leaveTypeController = TextEditingController();
   final TextEditingController _reasonController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _leaveTypeController.dispose();
     _reasonController.dispose();
     super.dispose();
   }
@@ -24,37 +25,38 @@ class _LeaveApplicationState extends State<LeaveApplication> {
       appBar: AppBar(
         title: const Text('Leave Application'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Your Name'),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _reasonController,
-              decoration: InputDecoration(labelText: 'Reason for Leave'),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Process the leave application here
-                final String name = _nameController.text;
-                final String reason = _reasonController.text;
-                // You can add validation and further processing here
-                // For example, you can send this data to a server or perform local storage
-                // For now, let's just print the details
-                print('Name: $name');
-                print('Reason: $reason');
-                // Show a confirmation dialog or navigate to a new screen after processing
-              },
-              child: const Text('Submit'),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: _leaveTypeController,
+                decoration: InputDecoration(labelText: 'Leave Type'),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _reasonController,
+                decoration: InputDecoration(labelText: 'Reason for Leave'),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 20),
+              DatePicker(message: "Start Date"),
+              const SizedBox(height: 20),
+              DatePicker(message: "End Date"),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  final String name = _leaveTypeController.text;
+                  final String reason = _reasonController.text;
+                  print('Name: $name');
+                  print('Reason: $reason');
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
