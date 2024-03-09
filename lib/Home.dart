@@ -53,7 +53,7 @@ class UpperProfile extends StatelessWidget {
             ),
             Column(
               children: [
-                Text('asdasdasdEmail'),
+                Text('Email'),
                 Text('Phone'),
                 Text('Address'),
               ],
