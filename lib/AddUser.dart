@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class AddUser extends StatefulWidget {
-  const AddUser({Key? key}) : super(key: key);
+  final int? userId;
+  const AddUser({super.key, this.userId});
 
   @override
   State<AddUser> createState() => _AddUserState();
@@ -20,6 +21,15 @@ class _AddUserState extends State<AddUser> {
   String? _selectedGender;
 
   @override
+void initState() {
+    super.initState();
+    if (widget.userId != null) {
+      getUser(context);
+    }
+  }
+
+
+  @override
   void dispose() {
     _userNameController.dispose();
     _employeeIdController.dispose();
@@ -28,6 +38,100 @@ class _AddUserState extends State<AddUser> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     super.dispose();
+  }
+
+  Future<void> getUser(BuildContext context) async {
+    final url = Uri.parse('http://192.168.43.214:8080/user/${widget.userId}');
+    print(url);
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> userData = json.decode(response.body);
+      _employeeIdController.text = userData['employeeId'].toString();
+      _userNameController.text = userData['username'];
+      _emailController.text = userData['email'];
+      _firstNameController.text = userData['firstName'];
+      _lastNameController.text = userData['lastName'];
+      _selectedGender = userData['gender'];
+      _role = userData['role'];
+      print(_userNameController.text);
+    } else {
+      print('Failed to load user data. Status code: ${response.statusCode}');
+    }
+  }
+
+  Future<void> _updateUser(BuildContext context) async {
+    final String username = _userNameController.text;
+    final String employeeId = _employeeIdController.text;
+    final String password = _passwordController.text;
+    final String email = _emailController.text;
+    final String firstName = _firstNameController.text;
+    final String lastName = _lastNameController.text;
+    final String gender = _selectedGender ?? '';
+    final String role = _role ?? '';
+    final url = Uri.parse('http://192.168.43.214:8080/user/update/${widget.userId}');
+
+    final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'id': widget.userId.toString(),
+          'username': username,
+          'employeeId': employeeId,
+          'password': password,
+          'email': email,
+          'role': role,
+          'firstName': firstName,
+          'lastName': lastName,
+          'gender': gender
+        }
+        )
+    );
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('User updated successfully'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context); // Navigate back twice to return to the previous screen
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Request failed
+      print('Failed to update user. Status code: ${response.statusCode}');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Failed to update user'),
+            content: Text('Failed to update user. Status code: ${response.statusCode}'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context); // Navigate back twice to return to the previous screen
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> _submitUser(BuildContext context) async {
@@ -41,6 +145,7 @@ class _AddUserState extends State<AddUser> {
     final String role = _role ?? '';
 
     final url = Uri.parse('http://192.168.43.214:8080/user');
+
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -115,34 +220,34 @@ class _AddUserState extends State<AddUser> {
             children: [
               TextFormField(
                 controller: _userNameController,
-                decoration: InputDecoration(labelText: 'Enter username'),
+                decoration: const InputDecoration(labelText: 'Enter username', border: OutlineInputBorder()),
               ),
-              const SizedBox(height: 20),
-              TextFormField(
+              if(widget.userId == null) const SizedBox(height: 20),
+              if(widget.userId == null) TextFormField(
                 controller: _employeeIdController,
-                decoration: InputDecoration(labelText: 'Enter employee Id'),
+                decoration: InputDecoration(labelText: 'Enter employee Id', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Enter a default password',),
+                decoration: InputDecoration(labelText: 'Enter a default password', border: OutlineInputBorder()),
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Enter email address'),
+                decoration: InputDecoration(labelText: 'Enter email address', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _firstNameController,
-                decoration: InputDecoration(labelText: 'Enter first name'),
+                decoration: InputDecoration(labelText: 'Enter first name', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _lastNameController,
-                decoration: InputDecoration(labelText: 'Enter last name'),
+                decoration: InputDecoration(labelText: 'Enter last name', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
@@ -160,10 +265,10 @@ class _AddUserState extends State<AddUser> {
                     child: Text(value),
                   );
                 }).toList(),
-                decoration: InputDecoration(labelText: 'Select gender'),
+                decoration: InputDecoration(labelText: 'Select gender', border: OutlineInputBorder()),
               ),
-              const SizedBox(height: 20),
-              DropdownButtonFormField<String>(
+              if(widget.userId == null) const SizedBox(height: 20),
+              if(widget.userId == null) DropdownButtonFormField<String>(
                 value: _role,
                 onChanged: (String? newValue) {
                   setState(() {
@@ -177,12 +282,18 @@ class _AddUserState extends State<AddUser> {
                     child: Text(value),
                   );
                 }).toList(),
-                decoration: InputDecoration(labelText: 'Select role'),
+                decoration: InputDecoration(labelText: 'Select role', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  _submitUser(context);
+                  if (widget.userId != null) {
+                    print('Updating user');
+                    _updateUser(context);
+                  } else {
+                    print('Adding user');
+                    _submitUser(context);
+                  }
                 },
                 child: const Text('Submit'),
               ),

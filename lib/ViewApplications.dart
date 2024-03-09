@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:http/http.dart' as http;
 import 'package:workforce_pro/PendingApplications.dart';
 
@@ -17,7 +18,7 @@ class _ViewApplicationsState extends State<ViewApplications> {
   @override
   void initState() {
     super.initState();
-    fetchApplications();
+
   }
 
   Future<void> fetchApplications() async {
@@ -40,7 +41,20 @@ class _ViewApplicationsState extends State<ViewApplications> {
       appBar: AppBar(
         title: const Text('View Applications'),
       ),
-      body: applications.isEmpty ? const Center(child: CircularProgressIndicator()) : ListView.builder(
+      body: applications.isEmpty ? Center(child: Animate(
+          effects: const [
+            RotateEffect(
+              alignment: Alignment.center,
+              duration: Duration(seconds: 1),
+            )
+          ],
+          child: const CircularProgressIndicator(),
+          onComplete: (controller) {
+            fetchApplications();
+            controller.loop();
+          },
+      )
+      ) : ListView.builder(
         itemCount: applications.length,
         itemBuilder: (context, index) {
           return ApplicationPreview(

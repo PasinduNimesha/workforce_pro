@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:http/http.dart' as http;
 
 import 'ViewApplications.dart';
@@ -18,12 +20,13 @@ class _PendingApplicationsState extends State<PendingApplications> {
 
   @override
   void initState() {
-    super.initState();
     fetchApplications();
+    super.initState();
   }
 
   Future<void> fetchApplications() async {
     final response = await http.get(Uri.parse('http://192.168.43.214:8080/application'));
+    sleep(Duration(milliseconds: 300));
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
       setState(() {
@@ -40,7 +43,19 @@ class _PendingApplicationsState extends State<PendingApplications> {
         appBar: AppBar(
           title: const Text('Pending Applications'),
         ),
-        body: applications.isEmpty ? const Center(child: CircularProgressIndicator()) : Builder(
+        body: applications.isEmpty ? Center(child: Animate(
+          effects: const [
+            RotateEffect(
+              alignment: Alignment.center,
+              duration: Duration(seconds: 1),
+            )
+          ],
+          child: const CircularProgressIndicator(),
+          onComplete: (controller) {
+            fetchApplications();
+            controller.loop();
+          },
+        )) : Builder(
             builder: (context) {
               return ListView.builder(
                 itemCount: applications.length,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:workforce_pro/AddEmployee.dart';
 import 'package:workforce_pro/AddUser.dart';
+import 'package:workforce_pro/EmployeeOverview.dart';
 import 'package:workforce_pro/ProfilesOverview.dart';
 
 import 'Home.dart';
@@ -55,7 +56,7 @@ class Administrator extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ViewApplications()),
+                  MaterialPageRoute(builder: (context) => const EmployeeOverview()),
                 );
               }
           ),

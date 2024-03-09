@@ -18,11 +18,11 @@ class Home extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: UpperProfile(), // Upper part of the profile screen
+            child: UpperProfile(),
           ),
           Expanded(
             flex: 3,
-            child: LowerProfile(), // Lower part of the profile screen
+            child: LowerProfile(),
           ),
         ],
       ),
@@ -38,7 +38,7 @@ class UpperProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue, // Example color for upper part
+      color: Colors.blue,
       child: const Padding(
         padding: EdgeInsets.all(30.0),
         child: Row(
@@ -85,7 +85,7 @@ class LowerProfile extends StatelessWidget {
                     child: const LeaveApplication(),
                     type: PageTransitionType.scale,
                     alignment: Alignment.center,
-                    duration: const Duration(milliseconds: 1000)
+                    duration: const Duration(milliseconds: 300)
                 )
 
             );
@@ -96,8 +96,9 @@ class LowerProfile extends StatelessWidget {
                 context,
                 PageTransition(
                     child: const ViewApplications(),
-                    type: PageTransitionType.rightToLeft,
-                    duration: const Duration(milliseconds: 50)
+                    type: PageTransitionType.rightToLeftWithFade,
+                    alignment: Alignment.center,
+                    duration: const Duration(milliseconds: 300)
                 )
             );
           },),

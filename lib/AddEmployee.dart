@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AddEmployee extends StatefulWidget {
   const AddEmployee({Key? key}) : super(key: key);
@@ -36,59 +36,68 @@ class _AddEmployeeState extends State<AddEmployee> {
             children: [
               TextFormField(
                 controller: _fullNameController,
-                decoration: const InputDecoration(labelText: 'Full Name'),
+                decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
-              RowDatePicker(
-                  message: "Birthdate",
-                  onDateSelected: (date) {
-                    setState(() {
-                      _selectedDate = date;
-                      _birthdateController.text = date.toLocal().toString().split(' ')[0];
-                    });
-                  },
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RowDatePicker(
+                      message: "Birthdate",
+                      onDateSelected: (date) {
+                        setState(() {
+                          _selectedDate = date;
+                          _birthdateController.text = date.toLocal().toString().split(' ')[0];
+                        });
+                      },
+                  ),
+                ),
               ),
 
 
               const SizedBox(height: 20),
               TextFormField(
                 controller: _maritalStatusController,
-                decoration: InputDecoration(labelText: 'Marital Status'),
+                decoration: InputDecoration(labelText: 'Marital Status', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emergencyContactController,
-                decoration: InputDecoration(labelText: 'Emergency Contact'),
+                decoration: InputDecoration(labelText: 'Emergency Contact', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _organizationIdController,
-                decoration: InputDecoration(labelText: 'Organization ID'),
+                decoration: InputDecoration(labelText: 'Organization ID', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _jobIdController,
-                decoration: InputDecoration(labelText: 'Job ID'),
+                decoration: InputDecoration(labelText: 'Job ID', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _addressController,
-                decoration: InputDecoration(labelText: 'Address'),
+                decoration: InputDecoration(labelText: 'Address', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _employmentStatusController,
-                decoration: InputDecoration(labelText: 'Employment Status'),
+                decoration: InputDecoration(labelText: 'Employment Status', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _supervisorController,
-                decoration: InputDecoration(labelText: 'Supervisor'),
+                decoration: InputDecoration(labelText: 'Supervisor', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _branchIdController,
-                decoration: InputDecoration(labelText: 'Branch ID'),
+                decoration: InputDecoration(labelText: 'Branch ID', border: OutlineInputBorder()),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -123,7 +132,9 @@ class _AddEmployeeState extends State<AddEmployee> {
 class RowDatePicker extends StatefulWidget {
   final String message;
   final ValueChanged<DateTime> onDateSelected;
-  const RowDatePicker({super.key, required this.message, required this.onDateSelected});
+
+  const RowDatePicker({Key? key, required this.message, required this.onDateSelected})
+      : super(key: key);
 
   @override
   State<RowDatePicker> createState() => _RowDatePickerState();
@@ -131,35 +142,78 @@ class RowDatePicker extends StatefulWidget {
 
 class _RowDatePickerState extends State<RowDatePicker> {
   DateTime? _selectedDate;
+
   @override
   Widget build(BuildContext context) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(_selectedDate == null ? 'Select ${widget.message}' : widget.message, style: TextStyle(fontSize: 16),),
-          const SizedBox(width: 50,),
-          TextButton(
-              onPressed: () async {
-                final pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2010),
-                  lastDate: DateTime(2030),
-                );
-                if (pickedDate != null) {
-                  setState(() {
-                    _selectedDate = pickedDate;
-                  });
-                  widget.onDateSelected(pickedDate);
-                }
-              },
-              child: Text(_selectedDate == null ? 'Select date' : '${_selectedDate!.toLocal()}'.split(' ')[0],
-              )
-          )
-        ]
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          _selectedDate == null ? 'Select ${widget.message}' : widget.message,
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(width: 50),
+        TextButton(
+          onPressed: () {
+            _showDatePicker(context);
+          },
+          child: Text(
+            _selectedDate == null
+                ? 'Select date'
+                : '${_selectedDate!.toLocal()}'.split(' ')[0],
+          ),
+        )
+      ],
     );
   }
+
+  Future<void> _showDatePicker(BuildContext context) async {
+    final pickedDate = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(10),
+          content: SizedBox(
+            height: 300,
+            child: SfDateRangePicker(
+              selectionMode: DateRangePickerSelectionMode.single,
+              showActionButtons: true,
+              onSubmit: (value) {
+                Navigator.pop(context, value);
+              },
+              onCancel: () {
+                Navigator.pop(context, null);
+              },
+              onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+                if (args.value is PickerDateRange) {
+                  final PickerDateRange range = args.value!;
+                  if (range.startDate != null) {
+                    Navigator.pop(context, range.startDate);
+                  }
+                } else if (args.value is DateTime) {
+                  final DateTime selectedDate = args.value!;
+                  Navigator.pop(context, selectedDate);
+                }
+              },
+              initialSelectedRange: PickerDateRange(
+                DateTime.now(),
+                DateTime.now(),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+      widget.onDateSelected(pickedDate);
+    }
+  }
 }
+
 
 
 
